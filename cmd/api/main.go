@@ -1,5 +1,9 @@
 package main
 
+import (
+	"log"
+)
+
 func main() {
 	app := &application{
 		config: Config{
@@ -8,5 +12,8 @@ func main() {
 	}
 
 	mux := app.mount()
-	app.run(mux)
+	err := app.run(mux)
+	if err != nil {
+		log.Fatal(err)
+	}
 }
