@@ -1,0 +1,63 @@
+# Binaries
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+
+# Build output
+/bin/
+/build/
+/dist/
+
+# Go workspace / modules
+go.work
+go.work.sum
+
+# Dependency directories (if used)
+vendor/
+
+# Logs
+*.log
+
+# Environment variables
+.env
+.env.*
+
+# Coverage files
+coverage.out
+*.coverprofile
+
+# IDEs and editors
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.temp
+
+# Debug
+debug
+
+# Go build cache (optional, usually not committed)
+.cache/
+
+# Test binary
+*.test
+
+# Profiling files
+*.pprof
+
+# Generated files (optional, customize as needed)
+*.gen.go
+
+# Air (live reload tool)
+.tmp/
