@@ -1,7 +1,1 @@
-ALTER TABLE users
-    DROP CONSTRAINT IF EXISTS unique_email;
-
-ALTER TABLE users
-    DROP CONSTRAINT IF EXISTS pm_key;
-
 DROP TABLE IF EXISTS users;

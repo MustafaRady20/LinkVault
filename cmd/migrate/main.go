@@ -42,7 +42,7 @@ func main() {
 			log.Fatalf("failed to apply migrations: %v", err)
 		}
 	case "down":
-		if err := m.Down(); err != nil && !errors.Is(err, migrate.ErrNoChange) {
+		if err := m.Steps(-1); err != nil && !errors.Is(err, migrate.ErrNoChange) {
 			log.Fatalf("failed to rollback migrations: %v", err)
 		}
 	default:

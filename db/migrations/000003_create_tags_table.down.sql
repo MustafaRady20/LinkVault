@@ -1,10 +1,1 @@
-ALTER TABLE tags
-    DROP CONSTRAINT IF EXISTS tag_pm_key;
-
-ALTER TABLE tags
-    DROP CONSTRAINT IF EXISTS unique_tag_name;
-
-ALTER TABLE tags
-    DROP CONSTRAINT IF EXISTS fk_user;
-
 DROP TABLE IF EXISTS tags;
