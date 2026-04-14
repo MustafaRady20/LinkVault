@@ -68,6 +68,13 @@ migrate-up: ## Run all pending migrations
 migrate-down: ## Run all down migrations
 	go run ./cmd/migrate down
 
+.PHONY: db-shell
+db-shell:
+	docker exec -it linkvault_db psql -U postgres -d linkvault
+	
+.PHONY: db-tables
+db-tables:
+	docker exec -it linkvault_db psql -U postgres -d linkvault -c "\dt"
 # =========================
 # Lint
 # =========================
