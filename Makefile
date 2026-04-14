@@ -4,6 +4,8 @@
 APP_NAME=api
 BIN_DIR=./bin
 MAIN_PATH=./cmd/api
+MIGRATIONS_PATH=./db/migrations
+
 
 # =========================
 # Help
@@ -53,14 +55,26 @@ docker-logs: ## docker compose logs -f
 # =========================
 # Migrations
 # =========================
+
+.PHONY: migrate-create
+migrate-create: ## Create a new migration: make migrate-create NAME=create_something
+	migrate create -ext sql -dir $(MIGRATIONS_PATH) -seq $(NAME)
+
 .PHONY: migrate-up
-migrate-up: ## placeholder — prints "migrate up (coming soon)"
-	@echo "migrate up (coming soon)"
+migrate-up: ## Run all pending migrations
+	go run ./cmd/migrate up
 
 .PHONY: migrate-down
-migrate-down: ## placeholder — prints "migrate down (coming soon)"
-	@echo "migrate down (coming soon)"
+migrate-down: ## Run all down migrations
+	go run ./cmd/migrate down
 
+.PHONY: db-shell
+db-shell:
+	docker exec -it linkvault_db psql -U postgres -d linkvault
+	
+.PHONY: db-tables
+db-tables:
+	docker exec -it linkvault_db psql -U postgres -d linkvault -c "\dt"
 # =========================
 # Lint
 # =========================

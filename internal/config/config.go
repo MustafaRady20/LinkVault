@@ -3,6 +3,7 @@ package config
 import (
 	"fmt"
 
+	"github.com/joho/godotenv"
 	"github.com/spf13/viper"
 )
 
@@ -29,7 +30,7 @@ type DB struct {
 }
 
 func Load() (*Config, error) {
-
+	_ = godotenv.Load()
 	viper.SetDefault("app.port", ":8080")
 	viper.SetDefault("app.env", "development")
 	viper.SetDefault("db.port", 5432)
@@ -69,6 +70,10 @@ func Load() (*Config, error) {
 }
 
 func (c *Config) DSN() string {
+	fmt.Println("USER:", c.DB.User)
+	fmt.Println("PASS:", c.DB.Password)
+	fmt.Println("HOST:", c.DB.Host)
+	fmt.Println("DB:", c.DB.Name)
 	return fmt.Sprintf(
 		"postgres://%s:%s@%s:%d/%s?sslmode=%s",
 		c.DB.User, c.DB.Password,
