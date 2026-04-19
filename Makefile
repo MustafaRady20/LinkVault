@@ -5,7 +5,7 @@ APP_NAME=api
 BIN_DIR=./bin
 MAIN_PATH=./cmd/api
 MIGRATIONS_PATH=./db/migrations
-
+SQLC_VERSION=v1.27.0
 
 # =========================
 # Help
@@ -75,6 +75,12 @@ db-shell:
 .PHONY: db-tables
 db-tables:
 	docker exec -it linkvault_db psql -U postgres -d linkvault -c "\dt"
+
+
+.PHONY: sqlc
+sqlc:  ## Generate type-safe Go code from SQL queries
+	go run github.com/sqlc-dev/sqlc/cmd/sqlc@$(SQLC_VERSION) generate
+	
 # =========================
 # Lint
 # =========================
