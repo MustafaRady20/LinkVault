@@ -1,7 +1,7 @@
 CREATE TABLE IF NOT EXISTS bookmarks (
     id               UUID        PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id          UUID        NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-    url              TEXT        NOT NULL,
+    url              URL        NOT NULL,
     title            TEXT,
     description      TEXT,
     favicon_url      TEXT,
@@ -12,5 +12,4 @@ CREATE TABLE IF NOT EXISTS bookmarks (
     UNIQUE (user_id, url)
 );
 
-CREATE INDEX idx_bookmarks_user_id   ON bookmarks(user_id);
-CREATE INDEX idx_bookmarks_created_at ON bookmarks(created_at);
+CREATE INDEX idx_bookmarks_user_id   ON bookmarks(user_id, created_at);

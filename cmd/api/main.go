@@ -19,6 +19,6 @@ func main() {
 	mux := app.mount()
 	err = app.run(mux)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalf("failed to run application: %v", err)
 	}
 }

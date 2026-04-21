@@ -3,3 +3,4 @@ CREATE TABLE IF NOT EXISTS bookmark_tags (
     tag_id      UUID NOT NULL REFERENCES tags(id)      ON DELETE CASCADE,
     PRIMARY KEY (bookmark_id, tag_id)
 );
+
