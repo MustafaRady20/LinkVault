@@ -2,6 +2,7 @@ package config
 
 import (
 	"fmt"
+	"log"
 
 	"github.com/joho/godotenv"
 	"github.com/spf13/viper"
@@ -40,7 +41,15 @@ func Load() (*Config, error) {
 	viper.SetDefault("db.maxidletime", "15m")
 
 	viper.AutomaticEnv()
+	// TODO:
+	// panic if not db host or password
 
+	dbHost := viper.GetString("POSTGRES_HOST")
+	dbPort := viper.GetInt("POSTGRES_PORT")
+
+	if dbHost == "" || dbPort == 0 {
+		log.Fatal("DB_HOST and DB_PORT environment variables must be set")
+	}
 	bindings := map[string]string{
 		"app.port":       "APP_PORT",
 		"app.env":        "APP_ENV",
@@ -70,10 +79,7 @@ func Load() (*Config, error) {
 }
 
 func (c *Config) DSN() string {
-	fmt.Println("USER:", c.DB.User)
-	fmt.Println("PASS:", c.DB.Password)
-	fmt.Println("HOST:", c.DB.Host)
-	fmt.Println("DB:", c.DB.Name)
+
 	return fmt.Sprintf(
 		"postgres://%s:%s@%s:%d/%s?sslmode=%s",
 		c.DB.User, c.DB.Password,
