@@ -1,7 +1,10 @@
 package main
 
 import (
+	"context"
+	"database/sql"
 	"fmt"
+	"log"
 	"net/http"
 	"time"
 
@@ -38,4 +41,25 @@ func (a *application) run(mux http.Handler) error {
 	fmt.Printf("Server is up and running on port %s", a.cfg.App.Port)
 	return srv.ListenAndServe()
 
+}
+
+func (a *application) connectDB() (*sql.DB, error) {
+	conn, err := sql.Open("postgres", a.cfg.DSN())
+	if err != nil {
+		log.Fatalf("Failed to connect to database: %v", err)
+	}
+	defer conn.Close()
+
+	conn.SetMaxOpenConns(a.cfg.DB.MaxOpenConn)
+	conn.SetMaxIdleConns(a.cfg.DB.MaxIdleConn)
+	conn.SetConnMaxIdleTime(time.Duration(a.cfg.DB.MaxIdleTime) * time.Second)
+
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	if err := conn.PingContext(ctx); err != nil {
+		log.Fatalf("Failed to ping database: %v", err)
+	}
+
+	return conn, nil
 }
