@@ -9,12 +9,14 @@ import (
 	"time"
 
 	"github.com/MustafaRady20/LinkVault/internal/config"
+	"github.com/MustafaRady20/LinkVault/internal/repository"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 )
 
 type application struct {
-	cfg *config.Config
+	cfg   *config.Config
+	store repository.Store
 }
 
 func (a *application) mount() http.Handler {
@@ -43,16 +45,15 @@ func (a *application) run(mux http.Handler) error {
 
 }
 
-func (a *application) connectDB() (*sql.DB, error) {
-	conn, err := sql.Open("postgres", a.cfg.DSN())
+func connectDB(cfg *config.Config) (*sql.DB, error) {
+	conn, err := sql.Open("postgres", cfg.DSN())
 	if err != nil {
 		log.Fatalf("Failed to connect to database: %v", err)
 	}
-	defer conn.Close()
 
-	conn.SetMaxOpenConns(a.cfg.DB.MaxOpenConn)
-	conn.SetMaxIdleConns(a.cfg.DB.MaxIdleConn)
-	conn.SetConnMaxIdleTime(time.Duration(a.cfg.DB.MaxIdleTime) * time.Second)
+	conn.SetMaxOpenConns(cfg.DB.MaxOpenConn)
+	conn.SetMaxIdleConns(cfg.DB.MaxIdleConn)
+	conn.SetConnMaxIdleTime(time.Duration(cfg.DB.MaxIdleTime) * time.Second)
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()

@@ -4,6 +4,7 @@ import (
 	"log"
 
 	"github.com/MustafaRady20/LinkVault/internal/config"
+	"github.com/MustafaRady20/LinkVault/internal/repository"
 )
 
 func main() {
@@ -12,8 +13,15 @@ func main() {
 		log.Fatal(err)
 	}
 
+	connPool, err := connectDB(cfg)
+	if err != nil {
+		log.Fatalf("failed to connect to database: %v", err)
+	}
+
+	store := repository.NewSQLStore(connPool)
 	app := &application{
-		cfg: cfg,
+		cfg:   cfg,
+		store: store,
 	}
 
 	mux := app.mount()
