@@ -12,4 +12,5 @@ type UserRepository interface {
 	GetUserByEmail(ctx context.Context, email string) (db.User, error)
 	GetUserByID(ctx context.Context, id uuid.UUID) (db.User, error)
 	UpdateUser(ctx context.Context, arg db.UpdateUserParams) (db.User, error)
+	DeleteUser(ctx context.Context, id uuid.UUID) error
 }

@@ -22,6 +22,7 @@ type Querier interface {
 	GetTagByID(ctx context.Context, arg GetTagByIDParams) (Tag, error)
 	GetUserByEmail(ctx context.Context, email string) (User, error)
 	GetUserByID(ctx context.Context, id uuid.UUID) (User, error)
+	ListBookmarksByUser(ctx context.Context, userID uuid.UUID) ([]Bookmark, error)
 	ListTagsByBookmark(ctx context.Context, bookmarkID uuid.UUID) ([]Tag, error)
 	ListTagsByUser(ctx context.Context, userID uuid.UUID) ([]Tag, error)
 	ListUnfetchedBookmarks(ctx context.Context) ([]Bookmark, error)

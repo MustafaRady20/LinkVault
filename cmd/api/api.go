@@ -4,7 +4,6 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
-	"log"
 	"net/http"
 	"time"
 
@@ -48,18 +47,22 @@ func (a *application) run(mux http.Handler) error {
 func connectDB(cfg *config.Config) (*sql.DB, error) {
 	conn, err := sql.Open("postgres", cfg.DSN())
 	if err != nil {
-		log.Fatalf("Failed to connect to database: %v", err)
+		return nil, fmt.Errorf("failed to open db: %w", err)
 	}
 
 	conn.SetMaxOpenConns(cfg.DB.MaxOpenConn)
 	conn.SetMaxIdleConns(cfg.DB.MaxIdleConn)
-	conn.SetConnMaxIdleTime(time.Duration(cfg.DB.MaxIdleTime) * time.Second)
+	duration, err := time.ParseDuration(cfg.DB.MaxIdleTime)
+	if err != nil {
+		return nil, fmt.Errorf("invalid db.maxidletime %q: %w", cfg.DB.MaxIdleTime, err)
+	}
+	conn.SetConnMaxIdleTime(duration)
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
 	if err := conn.PingContext(ctx); err != nil {
-		log.Fatalf("Failed to ping database: %v", err)
+		return nil, fmt.Errorf("failed to ping db: %w", err)
 	}
 
 	return conn, nil

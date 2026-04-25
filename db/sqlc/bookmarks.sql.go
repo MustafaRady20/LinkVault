@@ -29,7 +29,7 @@ RETURNING id, user_id, url, title, description, favicon_url, is_public, metadata
 
 type CreateBookmarkParams struct {
 	UserID          uuid.UUID      `json:"user_id"`
-	Url             string         `json:"url"`
+	Url             interface{}    `json:"url"`
 	Title           sql.NullString `json:"title"`
 	Description     sql.NullString `json:"description"`
 	FaviconUrl      sql.NullString `json:"favicon_url"`
@@ -104,6 +104,45 @@ func (q *Queries) GetBookmarkByID(ctx context.Context, arg GetBookmarkByIDParams
 	return i, err
 }
 
+const listBookmarksByUser = `-- name: ListBookmarksByUser :many
+SELECT id, user_id, url, title, description, favicon_url, is_public, metadata_fetched, created_at, updated_at FROM bookmarks WHERE user_id = $1
+ORDER BY created_at DESC
+`
+
+func (q *Queries) ListBookmarksByUser(ctx context.Context, userID uuid.UUID) ([]Bookmark, error) {
+	rows, err := q.db.QueryContext(ctx, listBookmarksByUser, userID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []Bookmark{}
+	for rows.Next() {
+		var i Bookmark
+		if err := rows.Scan(
+			&i.ID,
+			&i.UserID,
+			&i.Url,
+			&i.Title,
+			&i.Description,
+			&i.FaviconUrl,
+			&i.IsPublic,
+			&i.MetadataFetched,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const listUnfetchedBookmarks = `-- name: ListUnfetchedBookmarks :many
 SELECT id, user_id, url, title, description, favicon_url, is_public, metadata_fetched, created_at, updated_at FROM bookmarks WHERE metadata_fetched = false LIMIT 50
 `
@@ -154,7 +193,7 @@ RETURNING id, user_id, url, title, description, favicon_url, is_public, metadata
 `
 
 type UpdateBookmarkParams struct {
-	Url         string         `json:"url"`
+	Url         interface{}    `json:"url"`
 	Title       sql.NullString `json:"title"`
 	Description sql.NullString `json:"description"`
 	IsPublic    bool           `json:"is_public"`

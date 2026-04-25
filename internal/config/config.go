@@ -3,7 +3,6 @@ package config
 import (
 	"fmt"
 	"log"
-	"time"
 
 	"github.com/joho/godotenv"
 	"github.com/spf13/viper"
@@ -20,15 +19,15 @@ type App struct {
 }
 
 type DB struct {
-	Host        string        `mapstructure:"host"`
-	Port        int           `mapstructure:"port"`
-	User        string        `mapstructure:"user"`
-	Password    string        `mapstructure:"password"`
-	Name        string        `mapstructure:"name"`
-	SSLMode     string        `mapstructure:"sslmode"`
-	MaxOpenConn int           `mapstructure:"maxopenconn"`
-	MaxIdleConn int           `mapstructure:"maxidleconn"`
-	MaxIdleTime time.Duration `mapstructure:"maxidletime"`
+	Host        string `mapstructure:"host"`
+	Port        int    `mapstructure:"port"`
+	User        string `mapstructure:"user"`
+	Password    string `mapstructure:"password"`
+	Name        string `mapstructure:"name"`
+	SSLMode     string `mapstructure:"sslmode"`
+	MaxOpenConn int    `mapstructure:"maxopenconn"`
+	MaxIdleConn int    `mapstructure:"maxidleconn"`
+	MaxIdleTime string `mapstructure:"maxidletime"`
 }
 
 func Load() (*Config, error) {

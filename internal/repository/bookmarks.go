@@ -4,6 +4,7 @@ import (
 	"context"
 
 	db "github.com/MustafaRady20/LinkVault/db/sqlc"
+	"github.com/google/uuid"
 )
 
 type BookmarkRepository interface {
@@ -13,4 +14,5 @@ type BookmarkRepository interface {
 	UpdateBookmarkMetadata(ctx context.Context, arg db.UpdateBookmarkMetadataParams) (db.Bookmark, error)
 	DeleteBookmark(ctx context.Context, arg db.DeleteBookmarkParams) error
 	ListUnfetchedBookmarks(ctx context.Context) ([]db.Bookmark, error)
+	ListBookmarksByUser(ctx context.Context, userID uuid.UUID) ([]db.Bookmark, error)
 }

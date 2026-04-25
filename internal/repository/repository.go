@@ -17,7 +17,9 @@ type SQLStore struct {
 	connPool *sql.DB
 }
 
-func NewSQLStore(connPool *sql.DB) *SQLStore {
+var _ Store = (*SQLStore)(nil)
+
+func NewSQLStore(connPool *sql.DB) Store {
 	return &SQLStore{
 		Queries:  db.New(connPool),
 		connPool: connPool,
