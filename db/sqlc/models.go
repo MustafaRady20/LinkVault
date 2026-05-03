@@ -14,7 +14,7 @@ import (
 type Bookmark struct {
 	ID              uuid.UUID      `json:"id"`
 	UserID          uuid.UUID      `json:"user_id"`
-	Url             string         `json:"url"`
+	Url             interface{}    `json:"url"`
 	Title           sql.NullString `json:"title"`
 	Description     sql.NullString `json:"description"`
 	FaviconUrl      sql.NullString `json:"favicon_url"`

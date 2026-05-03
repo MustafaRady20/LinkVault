@@ -18,7 +18,7 @@ SELECT * FROM bookmarks
 WHERE id = $1 AND user_id = $2
 ORDER BY created_at DESC;
 
- -- name: ListBookmarksByUser :many
+-- name: ListBookmarksByUser :many
 SELECT * FROM bookmarks WHERE user_id = $1
 ORDER BY created_at DESC;
 

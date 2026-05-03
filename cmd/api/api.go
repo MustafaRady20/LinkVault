@@ -1,17 +1,21 @@
 package main
 
 import (
+	"context"
+	"database/sql"
 	"fmt"
 	"net/http"
 	"time"
 
 	"github.com/MustafaRady20/LinkVault/internal/config"
+	"github.com/MustafaRady20/LinkVault/internal/repository"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 )
 
 type application struct {
-	cfg *config.Config
+	cfg   *config.Config
+	store repository.Store
 }
 
 func (a *application) mount() http.Handler {
@@ -38,4 +42,28 @@ func (a *application) run(mux http.Handler) error {
 	fmt.Printf("Server is up and running on port %s", a.cfg.App.Port)
 	return srv.ListenAndServe()
 
+}
+
+func connectDB(cfg *config.Config) (*sql.DB, error) {
+	conn, err := sql.Open("postgres", cfg.DSN())
+	if err != nil {
+		return nil, fmt.Errorf("failed to open db: %w", err)
+	}
+
+	conn.SetMaxOpenConns(cfg.DB.MaxOpenConn)
+	conn.SetMaxIdleConns(cfg.DB.MaxIdleConn)
+	duration, err := time.ParseDuration(cfg.DB.MaxIdleTime)
+	if err != nil {
+		return nil, fmt.Errorf("invalid db.maxidletime %q: %w", cfg.DB.MaxIdleTime, err)
+	}
+	conn.SetConnMaxIdleTime(duration)
+
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	if err := conn.PingContext(ctx); err != nil {
+		return nil, fmt.Errorf("failed to ping db: %w", err)
+	}
+
+	return conn, nil
 }
